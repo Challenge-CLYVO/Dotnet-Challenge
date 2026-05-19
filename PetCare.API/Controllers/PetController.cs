@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetCare.Application.Interfaces;
+using PetCare.Application.DTOs;
 using PetCare.Domain.Entities;
 
 [ApiController]
@@ -20,8 +21,14 @@ public class PetController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(Pet pet)
+    public IActionResult Create(CreatePetDto dto)
     {
+        var pet = new Pet
+        {
+            Nome = dto.Nome,
+            IdTutor = dto.IdTutor
+        };
+
         _service.Create(pet);
         return Ok();
     }
