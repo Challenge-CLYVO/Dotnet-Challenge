@@ -6,22 +6,35 @@ using PetCare.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 🔌 Connection String (seguro)
+var connectionString = builder.Configuration.GetConnectionString("RecommendaContextOracle");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new Exception("Connection string 'RecommendaContextOracle' não configurada.");
+}
+
 // 🔌 Banco Oracle
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseOracle(builder.Configuration.GetConnectionString("OracleDb")));
+    options.UseOracle(connectionString));
 
 // 🔗 Dependências
 builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<IPetService, PetService>();
 
+// 🧩 Controllers + Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+// 📄 Swagger
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 
