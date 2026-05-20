@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PetCare.Infrastructure.Data;
-
+using PetCare.API.Middlewares;
 using PetCare.Application.Interfaces;
 using PetCare.Application.Services;
 
@@ -46,6 +46,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Swagger
 if (app.Environment.IsDevelopment())
