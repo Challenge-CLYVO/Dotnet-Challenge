@@ -1,6 +1,7 @@
 using PetCare.Application.DTOs.Consulta;
 using PetCare.Application.Interfaces;
 using PetCare.Domain.Entities;
+using PetCare.Application.Exceptions;
 
 namespace PetCare.Application.Services;
 
@@ -32,7 +33,7 @@ public class ConsultaService : IConsultaService
         var consulta = await _repository.GetByIdAsync(id);
 
         if (consulta == null)
-            return null;
+            throw new NotFoundException("Consulta não encontrada.");
 
         return new ReadConsultaDto
         {
@@ -62,7 +63,7 @@ public class ConsultaService : IConsultaService
         var consulta = await _repository.GetByIdAsync(id);
 
         if (consulta == null)
-            return;
+            throw new NotFoundException("Consulta não encontrada.");
 
         consulta.DataConsulta = dto.DataConsulta;
         consulta.Descricao = dto.Descricao;

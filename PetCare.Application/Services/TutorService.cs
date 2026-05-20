@@ -1,6 +1,7 @@
 using PetCare.Application.DTOs.Tutor;
 using PetCare.Application.Interfaces;
 using PetCare.Domain.Entities;
+using PetCare.Application.Exceptions;
 
 namespace PetCare.Application.Services;
 
@@ -31,7 +32,7 @@ public class TutorService : ITutorService
         var tutor = await _repository.GetByIdAsync(id);
 
         if (tutor == null)
-            return null;
+            throw new NotFoundException("Tutor não encontrado.");
 
         return new ReadTutorDto
         {
@@ -59,7 +60,7 @@ public class TutorService : ITutorService
         var tutor = await _repository.GetByIdAsync(id);
 
         if (tutor == null)
-            return;
+            throw new NotFoundException("Tutor não encontrado.");
 
         tutor.Nome = dto.Nome;
         tutor.Telefone = dto.Telefone;

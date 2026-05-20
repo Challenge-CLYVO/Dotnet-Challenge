@@ -1,5 +1,5 @@
-using System.Net;
 using System.Text.Json;
+using PetCare.Application.Exceptions;
 
 namespace PetCare.API.Middlewares;
 
@@ -18,22 +18,40 @@ public class ExceptionMiddleware
         {
             await _next(context);
         }
+
+        catch (NotFoundException ex)
+        {
+            context.Response.ContentType = "application/json";
+
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+
+            var response = new
+            {
+                status = 404,
+                mensagem = ex.Message
+            };
+
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(response)
+            );
+        }
+
         catch (Exception ex)
         {
             context.Response.ContentType = "application/json";
 
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
             var response = new
             {
-                status = context.Response.StatusCode,
-                mensagem = "Ocorreu um erro interno no servidor.",
+                status = 500,
+                mensagem = "Erro interno no servidor.",
                 detalhe = ex.Message
             };
 
-            var json = JsonSerializer.Serialize(response);
-
-            await context.Response.WriteAsync(json);
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(response)
+            );
         }
     }
 }

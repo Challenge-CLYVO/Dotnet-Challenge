@@ -1,6 +1,7 @@
 using PetCare.Application.DTOs.Clinica;
 using PetCare.Application.Interfaces;
 using PetCare.Domain.Entities;
+using PetCare.Application.Exceptions;
 
 namespace PetCare.Application.Services;
 
@@ -31,7 +32,7 @@ public class ClinicaService : IClinicaService
         var clinica = await _repository.GetByIdAsync(id);
 
         if (clinica == null)
-            return null;
+            throw new NotFoundException("Clínica não encontrada.");
 
         return new ReadClinicaDto
         {
@@ -59,7 +60,7 @@ public class ClinicaService : IClinicaService
         var clinica = await _repository.GetByIdAsync(id);
 
         if (clinica == null)
-            return;
+            throw new NotFoundException("Clínica não encontrada.");
 
         clinica.Nome = dto.Nome;
         clinica.Endereco = dto.Endereco;

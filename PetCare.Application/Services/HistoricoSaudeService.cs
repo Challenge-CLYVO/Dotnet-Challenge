@@ -1,6 +1,7 @@
 using PetCare.Application.DTOs.HistoricoSaude;
 using PetCare.Application.Interfaces;
 using PetCare.Domain.Entities;
+using PetCare.Application.Exceptions;
 
 namespace PetCare.Application.Services;
 
@@ -31,7 +32,7 @@ public class HistoricoSaudeService : IHistoricoSaudeService
         var historico = await _repository.GetByIdAsync(id);
 
         if (historico == null)
-            return null;
+            throw new NotFoundException("Histórico não encontrado.");
 
         return new ReadHistoricoSaudeDto
         {
@@ -59,7 +60,7 @@ public class HistoricoSaudeService : IHistoricoSaudeService
         var historico = await _repository.GetByIdAsync(id);
 
         if (historico == null)
-            return;
+            throw new NotFoundException("Histórico não encontrado.");
 
         historico.Descricao = dto.Descricao;
         historico.DataRegistro = dto.DataRegistro;

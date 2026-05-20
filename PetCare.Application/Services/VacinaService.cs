@@ -1,6 +1,7 @@
 using PetCare.Application.DTOs.Vacina;
 using PetCare.Application.Interfaces;
 using PetCare.Domain.Entities;
+using PetCare.Application.Exceptions;
 
 namespace PetCare.Application.Services;
 
@@ -30,7 +31,7 @@ public class VacinaService : IVacinaService
         var vacina = await _repository.GetByIdAsync(id);
 
         if (vacina == null)
-            return null;
+            throw new NotFoundException("Vacina não encontrada.");
 
         return new ReadVacinaDto
         {
@@ -56,7 +57,7 @@ public class VacinaService : IVacinaService
         var vacina = await _repository.GetByIdAsync(id);
 
         if (vacina == null)
-            return;
+            throw new NotFoundException("Vacina não encontrada.");
 
         vacina.Nome = dto.Nome;
         vacina.Descricao = dto.Descricao;

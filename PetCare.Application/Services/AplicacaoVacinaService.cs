@@ -1,6 +1,7 @@
 using PetCare.Application.DTOs.AplicacaoVacina;
 using PetCare.Domain.Entities;
 using PetCare.Application.Interfaces;
+using PetCare.Application.Exceptions;
 
 namespace PetCare.Application.Services;
 
@@ -31,7 +32,7 @@ public class AplicacaoVacinaService
         var a = await _repository.GetByIdAsync(id);
 
         if (a == null)
-            return null;
+            throw new NotFoundException("Aplicação de vacina não encontrada.");
 
         return new ReadAplicacaoVacinaDto
         {
@@ -59,7 +60,7 @@ public class AplicacaoVacinaService
         var aplicacao = await _repository.GetByIdAsync(id);
 
         if (aplicacao == null)
-            return;
+            throw new NotFoundException("Aplicação de vacina não encontrada.");
 
         aplicacao.DataAplicacao = dto.DataAplicacao;
         aplicacao.IdVacina = dto.IdVacina;

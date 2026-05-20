@@ -1,6 +1,7 @@
 using PetCare.Application.DTOs.Pet;
 using PetCare.Application.Interfaces;
 using PetCare.Domain.Entities;
+using PetCare.Application.Exceptions;
 
 namespace PetCare.Application.Services;
 
@@ -34,7 +35,7 @@ public class PetService : IPetService
         var pet = await _repository.GetByIdAsync(id);
 
         if (pet == null)
-            return null;
+            throw new NotFoundException("Pet não encontrado.");
 
         return new ReadPetDto
         {
@@ -67,7 +68,7 @@ public class PetService : IPetService
         var pet = await _repository.GetByIdAsync(id);
 
         if (pet == null)
-            return;
+            throw new NotFoundException("Pet não encontrado.");
 
         pet.Nome = dto.Nome;
         pet.Idade = dto.Idade;
