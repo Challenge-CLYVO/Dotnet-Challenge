@@ -1,7 +1,6 @@
 using PetCare.Application.DTOs.Clinica;
 using PetCare.Application.Interfaces;
 using PetCare.Domain.Entities;
-using PetCare.Application.Interfaces;
 
 namespace PetCare.Application.Services;
 
