@@ -1,8 +1,9 @@
-namespace PetCare.Infrastructure.Repositories;
-
-using PetCare.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using PetCare.Application.Interfaces;
+using PetCare.Domain.Entities;
 using PetCare.Infrastructure.Data;
+
+namespace PetCare.Infrastructure.Repositories;
 
 public class PetRepository : IPetRepository
 {
@@ -13,19 +14,43 @@ public class PetRepository : IPetRepository
         _context = context;
     }
 
-    public IEnumerable<Pet> GetAll()
+    public async Task<IEnumerable<Pet>> GetAllAsync()
     {
-        return _context.Pets.ToList();
+        return await _context.Pets
+            .Include(p => p.Tutor)
+            .ToListAsync();
     }
 
-    public Pet GetById(int id)
+    public async Task<Pet?> GetByIdAsync(int id)
     {
-        return _context.Pets.Find(id);
+        return await _context.Pets
+            .Include(p => p.Tutor)
+            .FirstOrDefaultAsync(p => p.IdPet == id);
     }
 
-    public void Create(Pet pet)
+    public async Task AddAsync(Pet pet)
     {
         _context.Pets.Add(pet);
-        _context.SaveChanges();
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Pet pet)
+    {
+        _context.Pets.Update(pet);
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        var pet = await _context.Pets.FindAsync(id);
+
+        if (pet != null)
+        {
+            _context.Pets.Remove(pet);
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -1,6 +1,8 @@
-namespace PetCare.Application.Services;
-using PetCare.Domain.Entities;
+using PetCare.Application.DTOs.Pet;
 using PetCare.Application.Interfaces;
+using PetCare.Domain.Entities;
+
+namespace PetCare.Application.Services;
 
 public class PetService : IPetService
 {
@@ -11,18 +13,73 @@ public class PetService : IPetService
         _repository = repository;
     }
 
-    public IEnumerable<Pet> GetAll()
+    public async Task<IEnumerable<ReadPetDto>> GetAllAsync()
     {
-        return _repository.GetAll();
+        var pets = await _repository.GetAllAsync();
+
+        return pets.Select(p => new ReadPetDto
+        {
+            IdPet = p.IdPet,
+            Nome = p.Nome,
+            Idade = p.Idade,
+            Especie = p.Especie,
+            Raca = p.Raca,
+            IdTutor = p.IdTutor,
+            NomeTutor = p.Tutor.Nome
+        });
     }
 
-    public Pet GetById(int id)
+    public async Task<ReadPetDto?> GetByIdAsync(int id)
     {
-        return _repository.GetById(id);
+        var pet = await _repository.GetByIdAsync(id);
+
+        if (pet == null)
+            return null;
+
+        return new ReadPetDto
+        {
+            IdPet = pet.IdPet,
+            Nome = pet.Nome,
+            Idade = pet.Idade,
+            Especie = pet.Especie,
+            Raca = pet.Raca,
+            IdTutor = pet.IdTutor,
+            NomeTutor = pet.Tutor.Nome
+        };
     }
 
-    public void Create(Pet pet)
+    public async Task CreateAsync(CreatePetDto dto)
     {
-        _repository.Create(pet);
+        var pet = new Pet
+        {
+            Nome = dto.Nome,
+            Idade = dto.Idade,
+            Especie = dto.Especie,
+            Raca = dto.Raca,
+            IdTutor = dto.IdTutor
+        };
+
+        await _repository.AddAsync(pet);
+    }
+
+    public async Task UpdateAsync(int id, UpdatePetDto dto)
+    {
+        var pet = await _repository.GetByIdAsync(id);
+
+        if (pet == null)
+            return;
+
+        pet.Nome = dto.Nome;
+        pet.Idade = dto.Idade;
+        pet.Especie = dto.Especie;
+        pet.Raca = dto.Raca;
+        pet.IdTutor = dto.IdTutor;
+
+        await _repository.UpdateAsync(pet);
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        await _repository.DeleteAsync(id);
     }
 }

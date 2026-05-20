@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using PetCare.Application.DTOs.Pet;
 using PetCare.Application.Interfaces;
-using PetCare.Application.DTOs;
-using PetCare.Domain.Entities;
+
+namespace PetCare.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -15,21 +16,45 @@ public class PetController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> GetAll()
     {
-        return Ok(_service.GetAll());
+        var result = await _service.GetAllAsync();
+
+        return Ok(result);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await _service.GetByIdAsync(id);
+
+        if (result == null)
+            return NotFound();
+
+        return Ok(result);
     }
 
     [HttpPost]
-    public IActionResult Create(CreatePetDto dto)
+    public async Task<IActionResult> Create(CreatePetDto dto)
     {
-        var pet = new Pet
-        {
-            Nome = dto.Nome,
-            IdTutor = dto.IdTutor
-        };
+        await _service.CreateAsync(dto);
 
-        _service.Create(pet);
-        return Ok();
+        return Created("", dto);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, UpdatePetDto dto)
+    {
+        await _service.UpdateAsync(id, dto);
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _service.DeleteAsync(id);
+
+        return NoContent();
     }
 }

@@ -1,10 +1,16 @@
-namespace PetCare.Application.Interfaces;
-
 using PetCare.Domain.Entities;
+
+namespace PetCare.Application.Interfaces;
 
 public interface IPetRepository
 {
-    IEnumerable<Pet> GetAll();
-    Pet GetById(int id);
-    void Create(Pet pet);
+    Task<IEnumerable<Pet>> GetAllAsync();
+
+    Task<Pet?> GetByIdAsync(int id);
+
+    Task AddAsync(Pet pet);
+
+    Task UpdateAsync(Pet pet);
+
+    Task DeleteAsync(int id);
 }
