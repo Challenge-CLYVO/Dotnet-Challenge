@@ -4,6 +4,9 @@ using PetCare.Application.Interfaces;
 
 namespace PetCare.API.Controllers;
 
+/// <summary>
+/// Controller responsável pelo gerenciamento de vacinas.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class VacinaController : ControllerBase
@@ -15,23 +18,32 @@ public class VacinaController : ControllerBase
         _service = service;
     }
 
+    /// <summary>
+    /// Retorna todas as vacinas cadastradas.
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        return Ok(await _service.GetAllAsync());
+        var vacinas = await _service.GetAllAsync();
+
+        return Ok(vacinas);
     }
 
+    /// <summary>
+    /// Busca uma vacina pelo ID.
+    /// </summary>
+    /// <param name="id">ID da vacina.</param>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var result = await _service.GetByIdAsync(id);
+        var vacina = await _service.GetByIdAsync(id);
 
-        if (result == null)
-            return NotFound();
-
-        return Ok(result);
+        return Ok(vacina);
     }
 
+    /// <summary>
+    /// Cria uma nova vacina.
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create(CreateVacinaDto dto)
     {
@@ -40,6 +52,10 @@ public class VacinaController : ControllerBase
         return Created("", dto);
     }
 
+    /// <summary>
+    /// Atualiza uma vacina existente.
+    /// </summary>
+    /// <param name="id">ID da vacina.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateVacinaDto dto)
     {
@@ -48,6 +64,10 @@ public class VacinaController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Remove uma vacina.
+    /// </summary>
+    /// <param name="id">ID da vacina.</param>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

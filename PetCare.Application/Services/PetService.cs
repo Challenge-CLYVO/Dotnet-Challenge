@@ -2,32 +2,26 @@ using PetCare.Application.DTOs.Pet;
 using PetCare.Application.Interfaces;
 using PetCare.Domain.Entities;
 using PetCare.Application.Exceptions;
+using AutoMapper;
 
 namespace PetCare.Application.Services;
 
 public class PetService : IPetService
 {
     private readonly IPetRepository _repository;
+    private readonly IMapper _mapper;
 
-    public PetService(IPetRepository repository)
+    public PetService(IPetRepository repository, IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<ReadPetDto>> GetAllAsync()
     {
         var pets = await _repository.GetAllAsync();
 
-        return pets.Select(p => new ReadPetDto
-        {
-            IdPet = p.IdPet,
-            Nome = p.Nome,
-            Idade = p.Idade,
-            Especie = p.Especie,
-            Raca = p.Raca,
-            IdTutor = p.IdTutor,
-            NomeTutor = p.Tutor.Nome
-        });
+        return _mapper.Map<IEnumerable<ReadPetDto>>(pets);
     }
 
     public async Task<ReadPetDto?> GetByIdAsync(int id)
@@ -37,28 +31,12 @@ public class PetService : IPetService
         if (pet == null)
             throw new NotFoundException("Pet não encontrado.");
 
-        return new ReadPetDto
-        {
-            IdPet = pet.IdPet,
-            Nome = pet.Nome,
-            Idade = pet.Idade,
-            Especie = pet.Especie,
-            Raca = pet.Raca,
-            IdTutor = pet.IdTutor,
-            NomeTutor = pet.Tutor.Nome
-        };
+        return _mapper.Map<ReadPetDto>(pet);
     }
 
     public async Task CreateAsync(CreatePetDto dto)
     {
-        var pet = new Pet
-        {
-            Nome = dto.Nome,
-            Idade = dto.Idade,
-            Especie = dto.Especie,
-            Raca = dto.Raca,
-            IdTutor = dto.IdTutor
-        };
+        var pet = _mapper.Map<Pet>(dto);
 
         await _repository.AddAsync(pet);
     }
@@ -70,11 +48,7 @@ public class PetService : IPetService
         if (pet == null)
             throw new NotFoundException("Pet não encontrado.");
 
-        pet.Nome = dto.Nome;
-        pet.Idade = dto.Idade;
-        pet.Especie = dto.Especie;
-        pet.Raca = dto.Raca;
-        pet.IdTutor = dto.IdTutor;
+        _mapper.Map(dto, pet);
 
         await _repository.UpdateAsync(pet);
     }

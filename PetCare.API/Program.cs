@@ -3,8 +3,9 @@ using PetCare.Infrastructure.Data;
 using PetCare.API.Middlewares;
 using PetCare.Application.Interfaces;
 using PetCare.Application.Services;
-
+using PetCare.Application.Mappings;
 using PetCare.Infrastructure.Repositories;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,10 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseOracle(connectionString));
 
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(TutorProfile));
+
+
 // Repositories
 builder.Services.AddScoped<IAplicacaoVacinaRepository, AplicacaoVacinaRepository>();
 builder.Services.AddScoped<IHistoricoSaudeRepository, HistoricoSaudeRepository>();
@@ -30,7 +35,7 @@ builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<ITutorRepository, TutorRepository>();
 
 // Services
-builder.Services.AddScoped<AplicacaoVacinaService>();
+builder.Services.AddScoped<IAplicacaoVacinaService, AplicacaoVacinaService>();
 builder.Services.AddScoped<IHistoricoSaudeService, HistoricoSaudeService>();
 builder.Services.AddScoped<IConsultaService, ConsultaService>();
 builder.Services.AddScoped<IClinicaService, ClinicaService>();
@@ -43,7 +48,14 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+    options.IncludeXmlComments(xmlPath);
+});
 
 var app = builder.Build();
 

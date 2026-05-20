@@ -4,6 +4,9 @@ using PetCare.Application.Interfaces;
 
 namespace PetCare.API.Controllers;
 
+/// <summary>
+/// Controller responsável pelo gerenciamento de consultas.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class ConsultaController : ControllerBase
@@ -15,23 +18,32 @@ public class ConsultaController : ControllerBase
         _service = service;
     }
 
+    /// <summary>
+    /// Retorna todas as consultas cadastradas.
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        return Ok(await _service.GetAllAsync());
+        var consultas = await _service.GetAllAsync();
+
+        return Ok(consultas);
     }
 
+    /// <summary>
+    /// Busca uma consulta pelo ID.
+    /// </summary>
+    /// <param name="id">ID da consulta.</param>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var consulta = await _service.GetByIdAsync(id);
 
-        if (consulta == null)
-            return NotFound();
-
         return Ok(consulta);
     }
 
+    /// <summary>
+    /// Cria uma nova consulta.
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create(CreateConsultaDto dto)
     {
@@ -40,6 +52,10 @@ public class ConsultaController : ControllerBase
         return Created("", dto);
     }
 
+    /// <summary>
+    /// Atualiza uma consulta existente.
+    /// </summary>
+    /// <param name="id">ID da consulta.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateConsultaDto dto)
     {
@@ -48,6 +64,10 @@ public class ConsultaController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Remove uma consulta.
+    /// </summary>
+    /// <param name="id">ID da consulta.</param>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

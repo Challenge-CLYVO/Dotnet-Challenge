@@ -2,55 +2,41 @@ using PetCare.Application.DTOs.AplicacaoVacina;
 using PetCare.Domain.Entities;
 using PetCare.Application.Interfaces;
 using PetCare.Application.Exceptions;
+using AutoMapper;
 
 namespace PetCare.Application.Services;
 
-public class AplicacaoVacinaService
+public class AplicacaoVacinaService : IAplicacaoVacinaService
 {
     private readonly IAplicacaoVacinaRepository _repository;
+    private readonly IMapper _mapper;
 
-    public AplicacaoVacinaService(IAplicacaoVacinaRepository repository)
+    public AplicacaoVacinaService(IAplicacaoVacinaRepository repository, IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<ReadAplicacaoVacinaDto>> GetAllAsync()
     {
         var aplicacoes = await _repository.GetAllAsync();
 
-        return aplicacoes.Select(a => new ReadAplicacaoVacinaDto
-        {
-            IdAplicacao = a.IdAplicacao,
-            DataAplicacao = a.DataAplicacao,
-            IdVacina = a.IdVacina,
-            IdPet = a.IdPet
-        });
+        return _mapper.Map<IEnumerable<ReadAplicacaoVacinaDto>>(aplicacoes);
     }
 
     public async Task<ReadAplicacaoVacinaDto?> GetByIdAsync(int id)
     {
-        var a = await _repository.GetByIdAsync(id);
+        var aplicacao = await _repository.GetByIdAsync(id);
 
-        if (a == null)
+        if (aplicacao == null)
             throw new NotFoundException("Aplicação de vacina não encontrada.");
 
-        return new ReadAplicacaoVacinaDto
-        {
-            IdAplicacao = a.IdAplicacao,
-            DataAplicacao = a.DataAplicacao,
-            IdVacina = a.IdVacina,
-            IdPet = a.IdPet
-        };
+        return _mapper.Map<ReadAplicacaoVacinaDto>(aplicacao);
     }
 
     public async Task CreateAsync(CreateAplicacaoVacinaDto dto)
     {
-        var aplicacao = new AplicacaoVacina
-        {
-            DataAplicacao = dto.DataAplicacao,
-            IdVacina = dto.IdVacina,
-            IdPet = dto.IdPet
-        };
+        var aplicacao = _mapper.Map<AplicacaoVacina>(dto);
 
         await _repository.AddAsync(aplicacao);
     }
@@ -62,9 +48,7 @@ public class AplicacaoVacinaService
         if (aplicacao == null)
             throw new NotFoundException("Aplicação de vacina não encontrada.");
 
-        aplicacao.DataAplicacao = dto.DataAplicacao;
-        aplicacao.IdVacina = dto.IdVacina;
-        aplicacao.IdPet = dto.IdPet;
+        _mapper.Map(dto, aplicacao);
 
         await _repository.UpdateAsync(aplicacao);
     }

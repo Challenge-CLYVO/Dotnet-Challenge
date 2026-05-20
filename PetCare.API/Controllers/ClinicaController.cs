@@ -4,6 +4,9 @@ using PetCare.Application.Interfaces;
 
 namespace PetCare.API.Controllers;
 
+/// <summary>
+/// Controller responsável pelo gerenciamento de clínicas.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class ClinicaController : ControllerBase
@@ -15,23 +18,32 @@ public class ClinicaController : ControllerBase
         _service = service;
     }
 
+    /// <summary>
+    /// Retorna todas as clínicas cadastradas.
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        return Ok(await _service.GetAllAsync());
+        var clinicas = await _service.GetAllAsync();
+
+        return Ok(clinicas);
     }
 
+    /// <summary>
+    /// Busca uma clínica pelo ID.
+    /// </summary>
+    /// <param name="id">ID da clínica.</param>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var clinica = await _service.GetByIdAsync(id);
 
-        if (clinica == null)
-            return NotFound();
-
         return Ok(clinica);
     }
 
+    /// <summary>
+    /// Cria uma nova clínica.
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create(CreateClinicaDto dto)
     {
@@ -40,6 +52,10 @@ public class ClinicaController : ControllerBase
         return Created("", dto);
     }
 
+    /// <summary>
+    /// Atualiza uma clínica existente.
+    /// </summary>
+    /// <param name="id">ID da clínica.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateClinicaDto dto)
     {
@@ -48,6 +64,10 @@ public class ClinicaController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Remove uma clínica.
+    /// </summary>
+    /// <param name="id">ID da clínica.</param>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

@@ -4,6 +4,9 @@ using PetCare.Application.Interfaces;
 
 namespace PetCare.API.Controllers;
 
+/// <summary>
+/// Controller responsável pelo gerenciamento de tutores.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class TutorController : ControllerBase
@@ -15,24 +18,32 @@ public class TutorController : ControllerBase
         _service = service;
     }
 
+    /// <summary>
+    /// Retorna todos os tutores cadastrados.
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _service.GetAllAsync();
-        return Ok(result);
+        var tutores = await _service.GetAllAsync();
+
+        return Ok(tutores);
     }
 
+    /// <summary>
+    /// Busca um tutor pelo ID.
+    /// </summary>
+    /// <param name="id">ID do tutor.</param>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var result = await _service.GetByIdAsync(id);
+        var tutor = await _service.GetByIdAsync(id);
 
-        if (result == null)
-            return NotFound();
-
-        return Ok(result);
+        return Ok(tutor);
     }
 
+    /// <summary>
+    /// Cria um novo tutor.
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create(CreateTutorDto dto)
     {
@@ -41,6 +52,10 @@ public class TutorController : ControllerBase
         return Created("", dto);
     }
 
+    /// <summary>
+    /// Atualiza um tutor existente.
+    /// </summary>
+    /// <param name="id">ID do tutor.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateTutorDto dto)
     {
@@ -49,6 +64,10 @@ public class TutorController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Remove um tutor.
+    /// </summary>
+    /// <param name="id">ID do tutor.</param>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

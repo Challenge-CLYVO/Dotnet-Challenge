@@ -2,29 +2,26 @@ using PetCare.Application.DTOs.Clinica;
 using PetCare.Application.Interfaces;
 using PetCare.Domain.Entities;
 using PetCare.Application.Exceptions;
+using AutoMapper;
 
 namespace PetCare.Application.Services;
 
 public class ClinicaService : IClinicaService
 {
     private readonly IClinicaRepository _repository;
+    private readonly IMapper _mapper;
 
-    public ClinicaService(IClinicaRepository repository)
+    public ClinicaService(IClinicaRepository repository, IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<ReadClinicaDto>> GetAllAsync()
     {
         var clinicas = await _repository.GetAllAsync();
 
-        return clinicas.Select(c => new ReadClinicaDto
-        {
-            IdClinica = c.IdClinica,
-            Nome = c.Nome,
-            Endereco = c.Endereco,
-            Telefone = c.Telefone
-        });
+        return _mapper.Map<IEnumerable<ReadClinicaDto>>(clinicas);
     }
 
     public async Task<ReadClinicaDto?> GetByIdAsync(int id)
@@ -34,23 +31,12 @@ public class ClinicaService : IClinicaService
         if (clinica == null)
             throw new NotFoundException("Clínica não encontrada.");
 
-        return new ReadClinicaDto
-        {
-            IdClinica = clinica.IdClinica,
-            Nome = clinica.Nome,
-            Endereco = clinica.Endereco,
-            Telefone = clinica.Telefone
-        };
+        return _mapper.Map<ReadClinicaDto>(clinica);
     }
 
     public async Task CreateAsync(CreateClinicaDto dto)
     {
-        var clinica = new Clinica
-        {
-            Nome = dto.Nome,
-            Endereco = dto.Endereco,
-            Telefone = dto.Telefone
-        };
+        var clinica = _mapper.Map<Clinica>(dto);
 
         await _repository.AddAsync(clinica);
     }
@@ -62,9 +48,7 @@ public class ClinicaService : IClinicaService
         if (clinica == null)
             throw new NotFoundException("Clínica não encontrada.");
 
-        clinica.Nome = dto.Nome;
-        clinica.Endereco = dto.Endereco;
-        clinica.Telefone = dto.Telefone;
+        _mapper.Map(dto, clinica);
 
         await _repository.UpdateAsync(clinica);
     }

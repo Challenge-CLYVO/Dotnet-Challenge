@@ -2,29 +2,26 @@ using PetCare.Application.DTOs.Tutor;
 using PetCare.Application.Interfaces;
 using PetCare.Domain.Entities;
 using PetCare.Application.Exceptions;
+using AutoMapper;
 
 namespace PetCare.Application.Services;
 
 public class TutorService : ITutorService
 {
     private readonly ITutorRepository _repository;
+    private readonly IMapper _mapper;
 
-    public TutorService(ITutorRepository repository)
+    public TutorService(ITutorRepository repository, IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<ReadTutorDto>> GetAllAsync()
     {
         var tutores = await _repository.GetAllAsync();
 
-        return tutores.Select(t => new ReadTutorDto
-        {
-            IdTutor = t.IdTutor,
-            Nome = t.Nome,
-            Telefone = t.Telefone,
-            Email = t.Email
-        });
+        return _mapper.Map<IEnumerable<ReadTutorDto>>(tutores);
     }
 
     public async Task<ReadTutorDto?> GetByIdAsync(int id)
@@ -34,23 +31,12 @@ public class TutorService : ITutorService
         if (tutor == null)
             throw new NotFoundException("Tutor não encontrado.");
 
-        return new ReadTutorDto
-        {
-            IdTutor = tutor.IdTutor,
-            Nome = tutor.Nome,
-            Telefone = tutor.Telefone,
-            Email = tutor.Email
-        };
+        return _mapper.Map<ReadTutorDto>(tutor);
     }
 
     public async Task CreateAsync(CreateTutorDto dto)
     {
-        var tutor = new Tutor
-        {
-            Nome = dto.Nome,
-            Telefone = dto.Telefone,
-            Email = dto.Email
-        };
+        var tutor = _mapper.Map<Tutor>(dto);
 
         await _repository.AddAsync(tutor);
     }
@@ -62,9 +48,7 @@ public class TutorService : ITutorService
         if (tutor == null)
             throw new NotFoundException("Tutor não encontrado.");
 
-        tutor.Nome = dto.Nome;
-        tutor.Telefone = dto.Telefone;
-        tutor.Email = dto.Email;
+        _mapper.Map(dto, tutor);
 
         await _repository.UpdateAsync(tutor);
     }

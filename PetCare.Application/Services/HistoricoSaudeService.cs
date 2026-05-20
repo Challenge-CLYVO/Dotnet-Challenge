@@ -2,29 +2,26 @@ using PetCare.Application.DTOs.HistoricoSaude;
 using PetCare.Application.Interfaces;
 using PetCare.Domain.Entities;
 using PetCare.Application.Exceptions;
+using AutoMapper;
 
 namespace PetCare.Application.Services;
 
 public class HistoricoSaudeService : IHistoricoSaudeService
 {
     private readonly IHistoricoSaudeRepository _repository;
+    private readonly IMapper _mapper;
 
-    public HistoricoSaudeService(IHistoricoSaudeRepository repository)
+    public HistoricoSaudeService(IHistoricoSaudeRepository repository, IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<ReadHistoricoSaudeDto>> GetAllAsync()
     {
         var historicos = await _repository.GetAllAsync();
 
-        return historicos.Select(h => new ReadHistoricoSaudeDto
-        {
-            IdHistorico = h.IdHistorico,
-            Descricao = h.Descricao,
-            DataRegistro = h.DataRegistro,
-            IdPet = h.IdPet
-        });
+        return _mapper.Map<IEnumerable<ReadHistoricoSaudeDto>>(historicos);
     }
 
     public async Task<ReadHistoricoSaudeDto?> GetByIdAsync(int id)
@@ -32,25 +29,14 @@ public class HistoricoSaudeService : IHistoricoSaudeService
         var historico = await _repository.GetByIdAsync(id);
 
         if (historico == null)
-            throw new NotFoundException("Histórico não encontrado.");
+            throw new NotFoundException("Histórico de saúde não encontrado.");
 
-        return new ReadHistoricoSaudeDto
-        {
-            IdHistorico = historico.IdHistorico,
-            Descricao = historico.Descricao,
-            DataRegistro = historico.DataRegistro,
-            IdPet = historico.IdPet
-        };
+        return _mapper.Map<ReadHistoricoSaudeDto>(historico);
     }
 
     public async Task CreateAsync(CreateHistoricoSaudeDto dto)
     {
-        var historico = new HistoricoSaude
-        {
-            Descricao = dto.Descricao,
-            DataRegistro = dto.DataRegistro,
-            IdPet = dto.IdPet
-        };
+        var historico = _mapper.Map<HistoricoSaude>(dto);
 
         await _repository.AddAsync(historico);
     }
@@ -60,11 +46,9 @@ public class HistoricoSaudeService : IHistoricoSaudeService
         var historico = await _repository.GetByIdAsync(id);
 
         if (historico == null)
-            throw new NotFoundException("Histórico não encontrado.");
+            throw new NotFoundException("Histórico de saúde não encontrado.");
 
-        historico.Descricao = dto.Descricao;
-        historico.DataRegistro = dto.DataRegistro;
-        historico.IdPet = dto.IdPet;
+        _mapper.Map(dto, historico);
 
         await _repository.UpdateAsync(historico);
     }
