@@ -12,8 +12,8 @@ using PetCare.Infrastructure.Data;
 namespace PetCare.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260520102103_Baseline")]
-    partial class Baseline
+    [Migration("20260520112438_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
