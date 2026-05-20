@@ -21,11 +21,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseOracle(connectionString));
 
 // Repositories
+builder.Services.AddScoped<IClinicaRepository, ClinicaRepository>();
 builder.Services.AddScoped<IVacinaRepository, VacinaRepository>();
 builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<ITutorRepository, TutorRepository>();
 
 // Services
+builder.Services.AddScoped<IClinicaService, ClinicaService>();
 builder.Services.AddScoped<IVacinaService, VacinaService>();
 builder.Services.AddScoped<IPetService, PetService>();
 builder.Services.AddScoped<ITutorService, TutorService>();
