@@ -139,7 +139,7 @@ dotnet run --project PetCare.API
 Após executar o projeto, acesse:
 
 ```bash
-https://localhost:5100/swagger
+http://localhost:5100/swagger
 ```
 
 ---
