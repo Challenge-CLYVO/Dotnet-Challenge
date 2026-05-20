@@ -21,6 +21,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseOracle(connectionString));
 
 // Repositories
+builder.Services.AddScoped<IAplicacaoVacinaRepository, AplicacaoVacinaRepository>();
 builder.Services.AddScoped<IHistoricoSaudeRepository, HistoricoSaudeRepository>();
 builder.Services.AddScoped<IConsultaRepository, ConsultaRepository>();
 builder.Services.AddScoped<IClinicaRepository, ClinicaRepository>();
@@ -29,6 +30,7 @@ builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<ITutorRepository, TutorRepository>();
 
 // Services
+builder.Services.AddScoped<AplicacaoVacinaService>();
 builder.Services.AddScoped<IHistoricoSaudeService, HistoricoSaudeService>();
 builder.Services.AddScoped<IConsultaService, ConsultaService>();
 builder.Services.AddScoped<IClinicaService, ClinicaService>();
