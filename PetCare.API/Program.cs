@@ -46,6 +46,9 @@ builder.Services.AddScoped<ITutorService, TutorService>();
 // Controllers + Swagger
 builder.Services.AddControllers();
 
+// Health Checks
+builder.Services.AddHealthChecks();
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
@@ -74,5 +77,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health");
 
 app.Run();
