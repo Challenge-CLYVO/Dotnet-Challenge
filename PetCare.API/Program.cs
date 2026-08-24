@@ -6,6 +6,8 @@ using PetCare.Application.Services;
 using PetCare.Application.Mappings;
 using PetCare.Infrastructure.Repositories;
 using System.Reflection;
+using PetCare.API.HealthChecks;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,7 +49,9 @@ builder.Services.AddScoped<ITutorService, TutorService>();
 builder.Services.AddControllers();
 
 // Health Checks
-builder.Services.AddHealthChecks();
+builder.Services
+    .AddHealthChecks()
+    .AddCheck<ApiHealthCheck>("api");
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -78,6 +82,26 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+
+        var response = new
+        {
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(entry => new
+            {
+                name = entry.Key,
+                status = entry.Value.Status.ToString(),
+                description = entry.Value.Description
+            }),
+            totalDuration = report.TotalDuration
+        };
+
+        await context.Response.WriteAsJsonAsync(response);
+    }
+});
 
 app.Run();
