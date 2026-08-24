@@ -47,11 +47,17 @@ builder.Services.AddScoped<ITutorService, TutorService>();
 
 // Controllers + Swagger
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 
 // Health Checks
 builder.Services
     .AddHealthChecks()
-    .AddCheck<ApiHealthCheck>("api");
+    .AddCheck<ApiHealthCheck>("api")
+    .AddDbContextCheck<AppDbContext>(
+        "oracle",
+        tags: new[] { "db", "oracle" })
+    .AddCheck<ExternalServiceHealthCheck>(
+        "external-service");
 
 builder.Services.AddEndpointsApiExplorer();
 
