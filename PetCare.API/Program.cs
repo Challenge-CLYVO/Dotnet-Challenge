@@ -15,6 +15,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
     .Enrich.FromLogContext()
     .Enrich.WithProperty("Application", "PetCare.API")
     .WriteTo.Console()
@@ -28,7 +29,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
 
-// Connection String
 var connectionString = builder.Configuration.GetConnectionString("RecommendaContextOracle");
 
 if (string.IsNullOrEmpty(connectionString))
@@ -36,12 +36,12 @@ if (string.IsNullOrEmpty(connectionString))
     throw new Exception("Connection string 'RecommendaContextOracle' não configurada.");
 }
 
-// Oracle
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseOracle(connectionString));
 
-// AutoMapper
-builder.Services.AddAutoMapper(typeof(TutorProfile));
+// Substitua o registro antigo por este:
+builder.Services.AddAutoMapper(cfg => { }, typeof(TutorProfile));
+
 
 
 // Repositories
@@ -102,8 +102,6 @@ if (app.Environment.IsDevelopment())
 
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
