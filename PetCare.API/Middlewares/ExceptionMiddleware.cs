@@ -1,6 +1,6 @@
 using System.Text.Json;
 using PetCare.Application.Exceptions;
-using Microsoft.Extensions.Logging;
+using PetCare.API.Metrics;
 
 namespace PetCare.API.Middlewares;
 
@@ -25,6 +25,8 @@ public class ExceptionMiddleware
 
         catch (NotFoundException ex)
         {
+            PetCareMetrics.HttpErrors.Add(1);
+            
             _logger.LogWarning(
                 ex,
                 "Recurso não encontrado. Path: {Path}",
@@ -48,6 +50,8 @@ public class ExceptionMiddleware
 
         catch (Exception ex)
         {
+            PetCareMetrics.HttpErrors.Add(1);
+
             _logger.LogError(
                 ex,
                 "Erro interno não tratado. Path: {Path}",

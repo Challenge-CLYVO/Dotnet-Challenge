@@ -13,7 +13,8 @@ using Serilog.Events;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using OpenTelemetry.Metrics;
+using PetCare.API.Metrics;
+using System.Diagnostics.Metrics;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -34,6 +35,10 @@ var builder = WebApplication.CreateBuilder(args);
 const string serviceName = "PetCare.API";
 const string serviceVersion = "1.0.0";
 
+var meter = new Meter("PetCare.API.Metrics", serviceVersion);
+var errorCounter = meter.CreateCounter<long>(
+    "petcare_http_errors_total",
+    description: "Quantidade total de erros HTTP da aplicação.");
 builder.Host.UseSerilog();
 
 builder.Services
@@ -59,6 +64,8 @@ builder.Services
                     .AddService(
                         serviceName,
                         serviceVersion: serviceVersion))
+            .AddMeter(PetCareMetrics.MeterName)
+            .AddMeter("PetCare.API.Metrics")
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()
             .AddRuntimeInstrumentation()
