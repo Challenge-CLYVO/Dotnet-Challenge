@@ -10,6 +10,10 @@ using PetCare.API.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using Serilog.Events;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Metrics;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -27,7 +31,39 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string serviceName = "PetCare.API";
+const string serviceVersion = "1.0.0";
+
 builder.Host.UseSerilog();
+
+builder.Services
+    .AddOpenTelemetry()
+    .WithTracing(tracing =>
+    {
+        tracing
+            .SetResourceBuilder(
+                ResourceBuilder.CreateDefault()
+                    .AddService(
+                        serviceName,
+                        serviceVersion: serviceVersion))
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddEntityFrameworkCoreInstrumentation()
+            .AddConsoleExporter();
+    })
+    .WithMetrics(metrics =>
+    {
+        metrics
+            .SetResourceBuilder(
+                ResourceBuilder.CreateDefault()
+                    .AddService(
+                        serviceName,
+                        serviceVersion: serviceVersion))
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddRuntimeInstrumentation()
+            .AddPrometheusExporter();
+    });
 
 var connectionString = builder.Configuration.GetConnectionString("RecommendaContextOracle");
 
@@ -94,6 +130,8 @@ app.UseSerilogRequestLogging();
 app.UseMiddleware<CorrelationIdMiddleware>();
 
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.MapPrometheusScrapingEndpoint();
 
 // Swagger
 if (app.Environment.IsDevelopment())
