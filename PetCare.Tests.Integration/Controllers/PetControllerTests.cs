@@ -35,7 +35,7 @@ public class PetControllerTests : IClassFixture<PetCareApiFactory>
     public async Task GetById_PetExistente_RetornaSucesso()
     {
         // Arrange
-        var id = 21;
+        var id = 1;
 
         // Act
         var response = await _client.GetAsync(
@@ -110,4 +110,73 @@ public class PetControllerTests : IClassFixture<PetCareApiFactory>
             HttpStatusCode.BadRequest,
             response.StatusCode);
     }
+    
+    [Fact]
+    public async Task Update_PetExistente_RetornaNoContent()
+    {
+        // Arrange
+        var id = 1;
+
+        var dto = new UpdatePetDto
+        {
+            Nome = "Pet Atualizado Integracao",
+            Idade = 4,
+            Especie = "Cachorro",
+            Raca = "Labrador",
+            IdTutor = 1
+        };
+
+        // Act
+        var response = await _client.PutAsJsonAsync(
+            $"/api/Pet/{id}",
+            dto);
+
+        // Assert
+        Assert.Equal(
+            HttpStatusCode.NoContent,
+            response.StatusCode);
+    }
+    
+    [Fact]
+    public async Task Update_PetNaoExistente_RetornaNotFound()
+    {
+        // Arrange
+        var id = 999999;
+    
+        var dto = new UpdatePetDto
+        {
+            Nome = "Pet Inexistente",
+            Idade = 4,
+            Especie = "Cachorro",
+            Raca = "Labrador",
+            IdTutor = 1
+        };
+    
+        // Act
+        var response = await _client.PutAsJsonAsync(
+            $"/api/Pet/{id}",
+            dto);
+    
+        // Assert
+        Assert.Equal(
+            HttpStatusCode.NotFound,
+            response.StatusCode);
+    }
+    
+    [Fact]
+    public async Task Delete_PetExistente_RetornaNoContent()
+    {
+        // Arrange
+        var id = 2;
+
+        // Act
+        var response = await _client.DeleteAsync(
+            $"/api/Pet/{id}");
+
+        // Assert
+        Assert.Equal(
+            HttpStatusCode.NoContent,
+            response.StatusCode);
+    }
 }
+
