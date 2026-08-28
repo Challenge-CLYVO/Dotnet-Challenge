@@ -5,7 +5,8 @@ using PetCare.Tests.Integration.Fixtures;
 
 namespace PetCare.Tests.Integration.Controllers;
 
-public class PetControllerTests : IClassFixture<PetCareApiFactory>
+[Collection("PetCare Collection")]
+public class PetControllerTests
 {
     private readonly HttpClient _client;
 
