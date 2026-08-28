@@ -97,7 +97,23 @@ dotnet restore
 
 ---
 
-## 3. Configurar o banco Oracle
+## 3. Preparar o Banco de Dados
+
+Limpar banco atual
+
+```text
+dotnet ef database drop --project PetCare.Infrastructure --startup-project PetCare.API --force
+```
+
+Criar banco novamente
+
+```text
+dotnet ef database update --project PetCare.Infrastructure --startup-project PetCare.API
+```
+
+---
+
+## 4. Configurar o banco Oracle
 
 Antes de executar a aplicação, é necessário configurar as credenciais de acesso ao banco Oracle.
 
@@ -131,7 +147,7 @@ Exemplo:
 
 ---
 
-## 4. Compilar o projeto
+## 5. Compilar o projeto
 
 Execute:
 
@@ -143,7 +159,7 @@ Se a compilação for concluída com sucesso, a aplicação estará pronta para 
 
 ---
 
-## 5. Executar os testes
+## 6. Executar os testes
 
 Para executar todos os testes:
 
@@ -171,7 +187,7 @@ dotnet test --collect:"XPlat Code Coverage"
 
 ---
 
-## 6. Executar a API
+## 7. Executar a API
 
 Execute:
 
@@ -183,7 +199,7 @@ A API será iniciada na porta configurada pelo projeto.
 
 ---
 
-## 7. Acessar o Swagger
+## 8. Acessar o Swagger
 
 Com a API em execução, acesse:
 
@@ -195,7 +211,7 @@ O Swagger permite visualizar e testar os endpoints da API.
 
 ---
 
-## 8. Testar o Health Check
+## 9. Testar o Health Check
 
 Com a API em execução, acesse:
 
@@ -211,7 +227,7 @@ O endpoint verifica:
 
 ---
 
-## 9. Visualizar as métricas
+## 10. Visualizar as métricas
 
 As métricas podem ser acessadas através de:
 
@@ -223,7 +239,7 @@ Esse endpoint disponibiliza as métricas coletadas pelo OpenTelemetry para monit
 
 ---
 
-## 10. Logs
+## 11. Logs
 
 Durante a execução da API, os logs podem ser visualizados diretamente no console.
 
