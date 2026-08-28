@@ -6,6 +6,16 @@ O projeto utiliza uma arquitetura organizada em camadas, integração com **Orac
 
 ---
 
+# Integrantes
+
+* Lucas Rafael Solimene / RM: 565194
+
+* Samyr Couto Oliveira / RM: 565562
+
+* Henrique Teixeira Cesar / RM: 563088
+
+---
+
 ## Tecnologias utilizadas
 
 * .NET 9
