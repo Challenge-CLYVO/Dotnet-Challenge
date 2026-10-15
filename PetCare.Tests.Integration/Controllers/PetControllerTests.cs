@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Net.Http.Headers;
 using PetCare.Application.DTOs.Pet;
 using PetCare.Tests.Integration.Fixtures;
+using PetCare.Tests.Integration.Authentication;
 
 namespace PetCare.Tests.Integration.Controllers;
 
@@ -16,24 +17,14 @@ public class PetControllerTests
         _client = factory.CreateClient();
     }
 
-    private async Task AutenticarAsync()
+    private Task AutenticarAsync()
     {
-        var response = await _client.PostAsync(
-            "/api/Auth/login",
-            null);
-
-        response.EnsureSuccessStatusCode();
-
-        var result = await response.Content
-            .ReadFromJsonAsync<LoginResponse>();
-
-        Assert.NotNull(result);
-        Assert.False(string.IsNullOrEmpty(result!.Token));
-
         _client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue(
                 "Bearer",
-                result.Token);
+                TestAuthHandler.ValidToken);
+
+        return Task.CompletedTask;
     }
 
     [Fact]
