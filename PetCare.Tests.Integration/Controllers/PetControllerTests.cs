@@ -8,13 +8,23 @@ using PetCare.Tests.Integration.Authentication;
 namespace PetCare.Tests.Integration.Controllers;
 
 [Collection("PetCare Collection")]
-public class PetControllerTests
+public class PetControllerTests : IDisposable
 {
+    private readonly PetCareApiFactory _factory;
     private readonly HttpClient _client;
 
-    public PetControllerTests(PetCareApiFactory factory)
+    public PetControllerTests()
     {
-        _client = factory.CreateClient();
+        _factory = new PetCareApiFactory();
+        _client = _factory.CreateClient();
+
+        _factory.SeedDatabase();
+    }
+
+    public void Dispose()
+    {
+        _client.Dispose();
+        _factory.Dispose();
     }
 
     private Task AutenticarAsync()
@@ -48,7 +58,7 @@ public class PetControllerTests
         // Arrange
         await AutenticarAsync();
 
-        var id = 1;
+        var id = await ObterIdDePetExistenteAsync();
 
         // Act
         var response = await _client.GetAsync(
@@ -66,7 +76,7 @@ public class PetControllerTests
         // Arrange
         await AutenticarAsync();
 
-        var id = 999999;
+        var id = int.MaxValue;
 
         // Act
         var response = await _client.GetAsync(
@@ -136,6 +146,8 @@ public class PetControllerTests
         // Arrange
         await AutenticarAsync();
 
+        var id = await ObterIdDePetExistenteAsync();
+        
         var dto = new UpdatePetDto
         {
             Nome = "Pet Atualizado Integracao",
@@ -147,7 +159,7 @@ public class PetControllerTests
 
         // Act
         var response = await _client.PutAsJsonAsync(
-            "/api/Pet/1",
+            $"/api/Pet/{id}",
             dto);
 
         // Assert
@@ -162,7 +174,7 @@ public class PetControllerTests
         // Arrange
         await AutenticarAsync();
 
-        var id = 999999;
+        var id = int.MaxValue;
 
         var dto = new UpdatePetDto
         {
@@ -190,7 +202,7 @@ public class PetControllerTests
         // Arrange
         await AutenticarAsync();
 
-        var id = 2;
+        var id = await ObterIdDePetExistenteAsync();
 
         // Act
         var response = await _client.DeleteAsync(
@@ -349,6 +361,20 @@ public class PetControllerTests
         Assert.Equal(
             HttpStatusCode.NotFound,
             getDeletedResponse.StatusCode);
+    }
+    private async Task<int> ObterIdDePetExistenteAsync()
+    {
+        var response = await _client.GetAsync("/api/Pet");
+
+        response.EnsureSuccessStatusCode();
+
+        var pets = await response.Content
+            .ReadFromJsonAsync<List<ReadPetDto>>();
+
+        Assert.NotNull(pets);
+        Assert.NotEmpty(pets);
+
+        return pets![0].IdPet;
     }
 
     private class LoginResponse
