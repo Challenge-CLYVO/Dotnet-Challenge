@@ -12,21 +12,55 @@ namespace PetCare.Tests.Unit.Application.Services;
 public class PetServiceTests
 {
     [Fact]
-    public async Task GetByIdAsync_PetExistente_RetornaPet()
+    public async Task GetAllAsync_ComPets_RetornaListaDeDtos()
     {
-        // Arrange
         var repositoryMock = new Mock<IPetRepository>();
         var mapperMock = new Mock<IMapper>();
 
-        var pet = new Pet
+        var pets = new List<Pet>
         {
-            IdPet = 1
+            new() { IdPet = 1, Nome = "Rex" },
+            new() { IdPet = 2, Nome = "Luna" }
         };
 
-        var dto = new ReadPetDto
+        var dtos = new List<ReadPetDto>
         {
-            IdPet = 1
+            new() { IdPet = 1, Nome = "Rex" },
+            new() { IdPet = 2, Nome = "Luna" }
         };
+
+        repositoryMock
+            .Setup(r => r.GetAllAsync())
+            .ReturnsAsync(pets);
+
+        mapperMock
+            .Setup(m => m.Map<IEnumerable<ReadPetDto>>(pets))
+            .Returns(dtos);
+
+        var service = new PetService(
+            repositoryMock.Object,
+            mapperMock.Object,
+            Mock.Of<ILogger<PetService>>());
+
+        var resultado = await service.GetAllAsync();
+
+        Assert.NotNull(resultado);
+        Assert.Equal(2, resultado.Count());
+        Assert.Equal("Rex", resultado.First().Nome);
+
+        repositoryMock.Verify(
+            r => r.GetAllAsync(),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_PetExistente_RetornaPet()
+    {
+        var repositoryMock = new Mock<IPetRepository>();
+        var mapperMock = new Mock<IMapper>();
+
+        var pet = new Pet { IdPet = 1, Nome = "Rex" };
+        var dto = new ReadPetDto { IdPet = 1, Nome = "Rex" };
 
         repositoryMock
             .Setup(r => r.GetByIdAsync(1))
@@ -41,18 +75,16 @@ public class PetServiceTests
             mapperMock.Object,
             Mock.Of<ILogger<PetService>>());
 
-        // Act
-        var result = await service.GetByIdAsync(1);
+        var resultado = await service.GetByIdAsync(1);
 
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(1, result!.IdPet);
+        Assert.NotNull(resultado);
+        Assert.Equal(1, resultado!.IdPet);
+        Assert.Equal("Rex", resultado.Nome);
     }
-    
+
     [Fact]
     public async Task GetByIdAsync_PetNaoExistente_LancaNotFoundException()
     {
-        // Arrange
         var repositoryMock = new Mock<IPetRepository>();
         var mapperMock = new Mock<IMapper>();
 
@@ -65,26 +97,19 @@ public class PetServiceTests
             mapperMock.Object,
             Mock.Of<ILogger<PetService>>());
 
-        // Act
         var act = () => service.GetByIdAsync(999);
 
-        // Assert
         await Assert.ThrowsAsync<NotFoundException>(act);
     }
-    
+
     [Fact]
     public async Task CreateAsync_DtoValido_AdicionaPetNoRepositorio()
     {
-        // Arrange
         var repositoryMock = new Mock<IPetRepository>();
         var mapperMock = new Mock<IMapper>();
 
         var dto = new CreatePetDto();
-
-        var pet = new Pet
-        {
-            IdPet = 1
-        };
+        var pet = new Pet { IdPet = 1 };
 
         mapperMock
             .Setup(m => m.Map<Pet>(dto))
@@ -99,35 +124,29 @@ public class PetServiceTests
             mapperMock.Object,
             Mock.Of<ILogger<PetService>>());
 
-        // Act
         await service.CreateAsync(dto);
 
-        // Assert
+        mapperMock.Verify(
+            m => m.Map<Pet>(dto),
+            Times.Once);
+
         repositoryMock.Verify(
             r => r.AddAsync(pet),
             Times.Once);
     }
-    
+
     [Fact]
     public async Task UpdateAsync_PetExistente_AtualizaPet()
     {
-        // Arrange
         var repositoryMock = new Mock<IPetRepository>();
         var mapperMock = new Mock<IMapper>();
 
-        var pet = new Pet
-        {
-            IdPet = 1
-        };
-
+        var pet = new Pet { IdPet = 1 };
         var dto = new UpdatePetDto();
 
         repositoryMock
             .Setup(r => r.GetByIdAsync(1))
             .ReturnsAsync(pet);
-
-        mapperMock
-            .Setup(m => m.Map(dto, pet));
 
         repositoryMock
             .Setup(r => r.UpdateAsync(pet))
@@ -138,19 +157,20 @@ public class PetServiceTests
             mapperMock.Object,
             Mock.Of<ILogger<PetService>>());
 
-        // Act
         await service.UpdateAsync(1, dto);
 
-        // Assert
+        mapperMock.Verify(
+            m => m.Map(dto, pet),
+            Times.Once);
+
         repositoryMock.Verify(
             r => r.UpdateAsync(pet),
             Times.Once);
     }
-    
+
     [Fact]
     public async Task UpdateAsync_PetNaoExistente_LancaNotFoundException()
     {
-        // Arrange
         var repositoryMock = new Mock<IPetRepository>();
         var mapperMock = new Mock<IMapper>();
 
@@ -163,24 +183,25 @@ public class PetServiceTests
             mapperMock.Object,
             Mock.Of<ILogger<PetService>>());
 
-        // Act
         var act = () => service.UpdateAsync(
             999,
             new UpdatePetDto());
 
-        // Assert
         await Assert.ThrowsAsync<NotFoundException>(act);
+
+        repositoryMock.Verify(
+            r => r.UpdateAsync(It.IsAny<Pet>()),
+            Times.Never);
     }
-    
+
     [Fact]
     public async Task DeleteAsync_IdValido_ChamaRepositorio()
     {
-        // Arrange
         var repositoryMock = new Mock<IPetRepository>();
         var mapperMock = new Mock<IMapper>();
 
         repositoryMock
-            .Setup(r => r.DeleteAsync(1))
+            .Setup(r => r.DeleteAsync(21))
             .Returns(Task.CompletedTask);
 
         var service = new PetService(
@@ -188,10 +209,8 @@ public class PetServiceTests
             mapperMock.Object,
             Mock.Of<ILogger<PetService>>());
 
-        // Act
         await service.DeleteAsync(21);
 
-        // Assert
         repositoryMock.Verify(
             r => r.DeleteAsync(21),
             Times.Once);

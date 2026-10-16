@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PetCare.Application.DTOs.HistoricoSaude;
 using PetCare.Application.Interfaces;
 
 namespace PetCare.API.Controllers;
 
 /// <summary>
-/// Controller responsável pelo gerenciamento do histórico de saúde.
+/// Controller responsÃ¡vel pelo gerenciamento do histÃ³rico de saÃºde.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -19,7 +19,7 @@ public class HistoricoSaudeController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todos os históricos de saúde cadastrados.
+    /// Retorna todos os histÃ³ricos de saÃºde cadastrados.
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -30,9 +30,9 @@ public class HistoricoSaudeController : ControllerBase
     }
 
     /// <summary>
-    /// Busca um histórico de saúde pelo ID.
+    /// Busca um histÃ³rico de saÃºde pelo ID.
     /// </summary>
-    /// <param name="id">ID do histórico.</param>
+    /// <param name="id">ID do histÃ³rico.</param>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -42,7 +42,7 @@ public class HistoricoSaudeController : ControllerBase
     }
 
     /// <summary>
-    /// Cria um novo histórico de saúde.
+    /// Cria um novo histÃ³rico de saÃºde.
     /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create(CreateHistoricoSaudeDto dto)
@@ -53,9 +53,10 @@ public class HistoricoSaudeController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza um histórico de saúde existente.
+    /// Atualiza um histÃ³rico de saÃºde existente.
     /// </summary>
-    /// <param name="id">ID do histórico.</param>
+    /// <param name="id">ID do histÃ³rico.</param>
+    /// <param name="dto">Dados atualizados do histórico de saúde.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateHistoricoSaudeDto dto)
     {
@@ -65,9 +66,9 @@ public class HistoricoSaudeController : ControllerBase
     }
 
     /// <summary>
-    /// Remove um histórico de saúde.
+    /// Remove um histÃ³rico de saÃºde.
     /// </summary>
-    /// <param name="id">ID do histórico.</param>
+    /// <param name="id">ID do histÃ³rico.</param>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

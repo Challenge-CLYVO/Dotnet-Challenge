@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PetCare.Application.DTOs.Clinica;
 using PetCare.Application.Interfaces;
 
 namespace PetCare.API.Controllers;
 
 /// <summary>
-/// Controller responsável pelo gerenciamento de clínicas.
+/// Controller responsÃ¡vel pelo gerenciamento de clÃ­nicas.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -19,7 +19,7 @@ public class ClinicaController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todas as clínicas cadastradas.
+    /// Retorna todas as clÃ­nicas cadastradas.
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -30,9 +30,9 @@ public class ClinicaController : ControllerBase
     }
 
     /// <summary>
-    /// Busca uma clínica pelo ID.
+    /// Busca uma clÃ­nica pelo ID.
     /// </summary>
-    /// <param name="id">ID da clínica.</param>
+    /// <param name="id">ID da clÃ­nica.</param>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -42,7 +42,7 @@ public class ClinicaController : ControllerBase
     }
 
     /// <summary>
-    /// Cria uma nova clínica.
+    /// Cria uma nova clÃ­nica.
     /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create(CreateClinicaDto dto)
@@ -53,9 +53,10 @@ public class ClinicaController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza uma clínica existente.
+    /// Atualiza uma clÃ­nica existente.
     /// </summary>
-    /// <param name="id">ID da clínica.</param>
+    /// <param name="id">ID da clÃ­nica.</param>
+    /// <param name="dto">Dados atualizados da clínica.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateClinicaDto dto)
     {
@@ -65,9 +66,9 @@ public class ClinicaController : ControllerBase
     }
 
     /// <summary>
-    /// Remove uma clínica.
+    /// Remove uma clÃ­nica.
     /// </summary>
-    /// <param name="id">ID da clínica.</param>
+    /// <param name="id">ID da clÃ­nica.</param>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

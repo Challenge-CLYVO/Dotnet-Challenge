@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PetCare.Application.DTOs.AplicacaoVacina;
 using PetCare.Application.Interfaces;
 
 namespace PetCare.API.Controllers;
 
 /// <summary>
-/// Controller responsável pelo gerenciamento de aplicações de vacina.
+/// Controller responsÃ¡vel pelo gerenciamento de aplicaÃ§Ãµes de vacina.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -19,7 +19,7 @@ public class AplicacaoVacinaController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todas as aplicações de vacina cadastradas.
+    /// Retorna todas as aplicaÃ§Ãµes de vacina cadastradas.
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -30,9 +30,9 @@ public class AplicacaoVacinaController : ControllerBase
     }
 
     /// <summary>
-    /// Busca uma aplicação de vacina pelo ID.
+    /// Busca uma aplicaÃ§Ã£o de vacina pelo ID.
     /// </summary>
-    /// <param name="id">ID da aplicação.</param>
+    /// <param name="id">ID da aplicaÃ§Ã£o.</param>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -42,7 +42,7 @@ public class AplicacaoVacinaController : ControllerBase
     }
 
     /// <summary>
-    /// Cria uma nova aplicação de vacina.
+    /// Cria uma nova aplicaÃ§Ã£o de vacina.
     /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create(CreateAplicacaoVacinaDto dto)
@@ -53,9 +53,10 @@ public class AplicacaoVacinaController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza uma aplicação de vacina existente.
+    /// Atualiza uma aplicaÃ§Ã£o de vacina existente.
     /// </summary>
-    /// <param name="id">ID da aplicação.</param>
+    /// <param name="id">ID da aplicaÃ§Ã£o.</param>
+    /// <param name="dto">Dados atualizados da aplicação de vacina.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateAplicacaoVacinaDto dto)
     {
@@ -65,9 +66,9 @@ public class AplicacaoVacinaController : ControllerBase
     }
 
     /// <summary>
-    /// Remove uma aplicação de vacina.
+    /// Remove uma aplicaÃ§Ã£o de vacina.
     /// </summary>
-    /// <param name="id">ID da aplicação.</param>
+    /// <param name="id">ID da aplicaÃ§Ã£o.</param>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

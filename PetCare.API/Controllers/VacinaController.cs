@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PetCare.Application.DTOs.Vacina;
 using PetCare.Application.Interfaces;
 
 namespace PetCare.API.Controllers;
 
 /// <summary>
-/// Controller responsável pelo gerenciamento de vacinas.
+/// Controller responsÃ¡vel pelo gerenciamento de vacinas.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -56,6 +56,7 @@ public class VacinaController : ControllerBase
     /// Atualiza uma vacina existente.
     /// </summary>
     /// <param name="id">ID da vacina.</param>
+    /// <param name="dto">Dados atualizados da vacina.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateVacinaDto dto)
     {

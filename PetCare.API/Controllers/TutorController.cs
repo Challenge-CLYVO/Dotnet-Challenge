@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PetCare.Application.DTOs.Tutor;
 using PetCare.Application.Interfaces;
 
 namespace PetCare.API.Controllers;
 
 /// <summary>
-/// Controller responsável pelo gerenciamento de tutores.
+/// Controller responsÃ¡vel pelo gerenciamento de tutores.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -56,6 +56,7 @@ public class TutorController : ControllerBase
     /// Atualiza um tutor existente.
     /// </summary>
     /// <param name="id">ID do tutor.</param>
+    /// <param name="dto">Dados atualizados do tutor.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateTutorDto dto)
     {

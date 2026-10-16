@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PetCare.Application.DTOs.Pet;
 using PetCare.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace PetCare.API.Controllers;
 
 /// <summary>
-/// Controller responsável pelo gerenciamento de pets.
+/// Controller responsÃ¡vel pelo gerenciamento de pets.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -58,6 +58,7 @@ public class PetController : ControllerBase
     /// Atualiza um pet existente.
     /// </summary>
     /// <param name="id">ID do pet.</param>
+    /// <param name="dto">Dados atualizados do pet.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdatePetDto dto)
     {

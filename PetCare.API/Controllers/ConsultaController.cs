@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PetCare.Application.DTOs.Consulta;
 using PetCare.Application.Interfaces;
 
 namespace PetCare.API.Controllers;
 
 /// <summary>
-/// Controller responsável pelo gerenciamento de consultas.
+/// Controller responsÃ¡vel pelo gerenciamento de consultas.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -56,6 +56,7 @@ public class ConsultaController : ControllerBase
     /// Atualiza uma consulta existente.
     /// </summary>
     /// <param name="id">ID da consulta.</param>
+    /// <param name="dto">Dados atualizados da consulta.</param>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateConsultaDto dto)
     {
