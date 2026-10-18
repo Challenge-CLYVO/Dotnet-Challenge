@@ -41,4 +41,8 @@
       <ProjectReference Include="..\PetCare.Infrastructure\PetCare.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="runtimeconfig.template.json" />
+    </ItemGroup>
+
 </Project>
