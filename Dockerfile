@@ -21,6 +21,9 @@ COPY PetCare.Application/ PetCare.Application/
 COPY PetCare.Infrastructure/ PetCare.Infrastructure/
 COPY PetCare.API/ PetCare.API/
 
+# Restaura novamente as dependências após copiar todo o código
+RUN dotnet restore PetCare.API/PetCare.API.csproj --force --no-cache
+
 # Publica a aplicação
 RUN dotnet publish PetCare.API/PetCare.API.csproj \
     -c Release \
